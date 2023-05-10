@@ -69,7 +69,6 @@ RUN ./configure \
         --without-http_limit_req_module \
         --without-http_map_module \
         --without-http_memcached_module \
-        --without-http_proxy_module \
         --without-http_referer_module \
         --without-http_scgi_module \
         --without-http_split_clients_module \
@@ -251,6 +250,7 @@ ARG BUILD_ALL=1
 RUN if [ "$BUILD_ALL" = "1" ]; then yarn config set network-timeout 300000 \
     && yarn install --pure-lockfile --prod \
     && yarn run buildall \
+    && php -d memory_limit=256M -d open_basedir='' /usr/bin/composer update league/config nette/schema --prefer-dist --no-cache --no-progress --no-dev -a \
     && php -d memory_limit=256M -d open_basedir='' /usr/bin/composer install --prefer-dist --no-cache --no-progress --no-dev -a \
     && rm -rf node_modules && yarn cache clean; fi
 # END ELABFTW
